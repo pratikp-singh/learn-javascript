@@ -1,0 +1,56 @@
+* Variables:
+    - Can't be reserved keyword
+    - Should be meaningful
+    - Can't start with number (1name)
+    - Can't contain a space or hyphen (-)
+    - Are case sensitive
+    - Should be declared using let or constant keyword. 
+    - var should not be used.
+
+* Constants:
+    - The value of a constant can't change.
+        const interestRate = 7.8;
+        interestRate = 8; // Error
+
+* Primitive Types (Value Types):
+    - In JS, there are two types: Primitive and Reference Types.
+
+    - Primitive Types:
+        * String
+        * Number
+        * Boolean
+        * undefined
+        * null
+        * Symbol
+
+    - undefined and null are both the values of variable.
+    - The type of undefined is undefined.
+    - The type of null is object.
+    - So, undefined is both type and value.
+
+* Dynamic Typing:
+    - Two type of languages: Statically Typed and Dynamically Typed
+
+    - Static Type:
+        - The type of the variable can't change after declaration.
+
+    - Dynamic Type:
+        - The type of variable can change in future.
+
+    - Operator typeof can be used to check the type of the variable.
+
+* Object Types:
+    - In object types, we have:
+        * objects
+        * arrays
+        * functions
+
+* Objects:
+    - 
+
+*  Arrays:
+    - List of items or elements
+
+* Functions:
+    - Two types of function: performs a task or calculate something
+
