@@ -1,0 +1,28 @@
+* Types of operators:
+    - Arithmetic:
+        - +, -, *, /, %, **
+        - ++, --
+
+    - Assignment:
+        - =, +=, -=, *=, /=, %=, **=
+
+    - Comparison:
+        - Relational: >, <, <=, >=
+        - Equality: ==(Loose Equality), ===(Strict Equality), !=, !==
+
+        - Ternary Operator:
+            result = (someCondition) ? (if true) : (if false);
+
+    - Logical:
+        - && : returns true if both the operands are true
+        - ||: returns true if at least one operand is true
+        - !: negates the condition
+
+    - Bitwise:
+        - &
+        - |
+        - !
+        - ^
+
+    
+- Falsy Values: NaN, 0, false, null, undefined, ''
