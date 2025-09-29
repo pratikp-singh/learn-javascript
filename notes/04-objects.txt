@@ -1,0 +1,310 @@
+* Objects:
+    - Collection of key-value pairs
+    - If properties that are highly related, we encapsulate inside an object.
+
+* Factory Function:
+    - naming convention for factory function: camel case
+    - any function that returns a new object.
+    - call the function with some parameters and it produces and returns a customized object
+    - Useful when creating multiple objects that share the same structure and methods
+
+    Example:
+        function createCircle(radius){
+            return {
+                radius: radius,
+                draw: function(){
+                    console.log('draw');
+                }
+            }
+        }
+
+        - Since, the key and value are same, it is safe to write only radius.
+        - Also, inside the object no need to write function.
+
+
+        function createCircle(radius){
+            return {
+                radius,
+                draw(){
+                    console.log('draw');
+                }
+            }
+        }
+
+        let circle1 = createCircle(1);
+        let circle2 = createCircle(10);
+
+* Constructor Function:
+    - A constructor function in JavaScript is a special function used as a blueprint to create and initialize multiple objects of the same type. It's a pattern for object creation that was common before ES6 classes were introduced.
+    - The two key ingredients that make a function a constructor are:
+        - The use of the this keyword to assign properties to the object being created.
+        - Calling the function with the new operator to actually create the object.
+
+    - By convention, the names of constructor functions start with a capital letter (e.g., Car, Person).
+
+    - 'this' is reference to the object that is currently executing current code.
+    - JS objects are dynamic. We can add properties after creation.
+
+        function Circle(radius){
+            this.radius = radius;
+            this.draw = function(){
+                console.log('Draw');
+            }
+        }
+
+        let circle1 = new Circle(10);
+
+    # How it works ?
+        - When we call a function using the new operator, JS does the following in the background:
+            * The new operator creates an empty JS object. (Like, const x = {};). 
+            * It then sets the "this" keyword inside the function to point to that new empty object.
+            * Executes the code inside the the constructor function, which adds properties and methods to the "this" object. (The properties and methods are added dynamically.)
+            * Implicitly returns the newly created object (this).
+
+                function Circle(radius) {
+                this.radius = radius;
+                this.draw = function () {
+                    console.log("Draw");
+                };
+                }
+
+                let c1 = new Circle(10);
+                let c2 = new Circle(11);
+
+                console.log(c1.radius);
+                console.log(c2.radius);
+        - If we do not use 'new' operator, then 'this' keyword inside the function will refer to global object which 'window' object in browser.
+
+* Dynamic Nature of Objects:
+    - Objects in JS are dynamic in nature. We can add new properties or delete the existing one.
+
+        let newCircle = {
+        radius: 1,
+        };
+
+        // Adding new properties and methods after creation
+        newCircle.color = "yellow";
+        newCircle["color"] = "red";
+        newCircle.draw = function () {
+        console.log("draw");
+        };
+
+        console.log(newCircle);
+
+        // Deleting proeperties and methods dynamically
+        delete newCircle.color;
+        delete newCircle.draw;
+        console.log(newCircle);
+
+* Constructor Property:
+    - Every object in JS has a property called 'constructor'.
+    - It references the function that was used to create or construct create that object.
+
+        function createCircle(radius) {
+        return {
+            radius,
+            draw() {
+            console.log("Draw");
+            },
+        };
+        }
+
+        function Circle(radius) {
+        //   console.log(`this: ${this}`);
+
+        this.radius = radius;
+        this.draw = function () {
+            console.log("Draw");
+        };
+        }
+
+
+        let circle = createCircle(1); // returns Object() function
+        let another = new Circle(1); // returns function Circle()
+
+        console.log(circle.constructor);
+        console.log(another.constructor);
+
+    # createCircle(1).constructor returns Object(). This is because,  inside createCircle(), object created using object literal. This object literal is created using new Object() internally.
+
+    So when we write 
+        let x = {};
+    it translates to 
+        let x = new Object();
+
+* Functions are Objects:
+    - Functions are objects. They have one special ability: they can invoked or called.
+    - Functions are first-class objects. A function can
+        * Be assigned to a variable or stored in an array.
+        * Be passed as an argument to another function.
+        * Be returned from another function
+        * Have properties and methods attached to it.
+
+            function X(){}
+            X.functionName = 'Function name is X';
+            X.paramLength = 0;
+
+        console.log(X.name); // name of the function
+        console.log(X.length);
+        console.log(Circle.constructor); // Function() 
+    
+    - When we declare a function using syntax, internally JS engine uses Function() constructor to create this object.
+
+        Example:
+
+            const X = new Function('value', `console.log('value is ', value)`);
+            X(10); // We can call like any regular function.
+
+            - Here the first argument to Function is the parameters to our function.
+            - 2nd argument is the actual code for our function.
+
+    - So, If a constructor function like Player is a blueprint for creating Player objects, then the built-in Function constructor is the master blueprint that JavaScript uses to create all functions, including the Player function itself.
+    - Just as an object literal {} is created by the Object constructor and an array literal [] is created by the Array constructor, a function declaration or expression is created by the Function constructor behind the scenes.
+
+    - When we write 
+        let circle = new Circle(10);
+      it translates to
+        Circle.call({}, 10);
+
+        Here, {} is the new object passed to call, which will be used inside Circle function definition.
+        If we do not pass any object, by default 'window' will be passed, which will be modified in the Circle function definition.
+
+* Value vs Reference Types:
+    - Primitives are copied by their value.
+        Example:
+            let x = 10;
+            let y = x;
+            x = 20;
+            console.log(y); // It still has 10;
+
+    - Objects are copied by their reference.
+        Example:
+            let x = {value: 10};
+            let y = x;
+            x.value = 100;
+            console.log(y); // same as x. As y has only reference.
+
+    Example:
+    --------
+
+        // Value type vs reference type
+
+        // Value Type
+
+        let x = 10;
+        let y = x;
+        x = 12;
+        console.log(y);
+
+        let number = 10;
+
+        function increase(number) {
+        number += 1;
+        }
+        increase(number);
+        console.log(number);
+
+        // Reference Type
+
+        let m = { value: 10 };
+        let n = m;
+
+        m.value += 1;
+        console.log(n);
+
+        let obj = { value: 10 };
+
+        function increase(obj) {
+        obj.value += 1;
+        }
+        increase(obj);
+        console.log(obj);
+
+* Enumerating Properties of an Object:
+
+        // Enumearting objects:
+        const circle = {
+        radius: 1,
+        draw() {
+            console.log("draw");
+        },
+        };
+
+        for (let key in circle) {
+        console.log(`KEY: ${key}, VALUE: ${circle[key]}`);
+        }
+
+        // for...of can't be used with object as the object is not iterable
+
+        for (const key of Object.keys(circle)) {
+        console.log(key, circle[key]);
+        }
+
+        // Object.keys(): return only the array of keys
+        // Object.entries(): return array of element and each element is an array of two elements: key and value
+        for (let entry of Object.entries(circle)) {
+        console.log(entry);
+        }
+
+        // To check if a property in an object: use 'in' operator
+        if ("radius" in circle) console.log("Yes it has.");
+
+* Cloning an Object:
+
+    - Method 1: iterate over all the keys and copy to new object
+    - Method 2: Using Object.assign() method
+    - Method 3: Using spread operator
+
+        Example:
+        --------
+
+            const circle = {
+            radius: 1,
+            draw() {
+                console.log("draw");
+            },
+            };
+
+            // Clone: Method 1 (Copy all key value pair)
+            // const another = {};
+            // for (let key in circle)
+            //     another[key] = circle[key];
+
+            // console.log(another);
+
+            // Clone: Method 2 (Using Object.assign() method)
+
+            // const another = Object.assign({}, circle); // first argument can be new object or existing object.
+            // const another = Object.assign({
+            //     color: 'yellow'
+            // }, circle); // first argument can be new object or existing object.
+            // console.log(another);
+
+
+            // Clone: Method 3 (using spread operator)
+            // const another = { ...circle };
+            const another = { ...circle, color: 'yellow' };
+            console.log(another);
+
+* Garbage Collection:
+    - In JS, we do not have to allocate and deallocate memory manually unlike C and C++.
+    - JS engine has garbage collector. The job of Grabage Collector is to find the variable and constants that are no longer used and then deallocate the memory allocated to them earlier.
+    - Memory allocation and deallocation happens behind the scene. We don't have the control over it.
+
+* Math:
+
+* String:
+
+    // Primitive String
+    let message = 'hi';
+    console.log(typeof message); // string 
+
+
+    // String Object
+    const another  = new String('hi');
+    console.log(typeof another); // object
+
+* Template Literals:
+
+* Date: 
+
