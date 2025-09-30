@@ -1,0 +1,403 @@
+* Function Declaration vs Expression:
+
+        // Function Declaration
+        function walk() {
+        console.log("Walk");
+        }
+
+        // Function Expression
+
+        // Anonymour Function Expression: No name for function
+        let run = function () {
+        console.log("run");
+        };
+
+        let move = run; // both run and move have same reference
+
+        // Named Function Expression
+
+        let run2 = function walk() {
+        console.log("run");
+        };
+
+* Hoisting:
+    - Hoisting in JavaScript is a behavior where variable and function declarations are moved to the top of their containing scope during the compilation phase, before the code is executed.
+
+    - Variable declarations (var) and function declarations are hoisted.
+    - Only the declarations are hoisted, not the initializations.
+
+    - Let and const are also hoisted, but they are not initialized and accessing them before declaration causes a ReferenceError (temporal dead zone).
+
+    - Function expressions are not hoisted.
+
+    - So, Hoisting lets you use variables and functions before they are declared, but only their declarations are moved, not their values.
+
+* Arguments:
+    - Every function is JS has a special object called: arguments
+        console.log(arguments)
+
+        Example:
+            function sum(a, b) {
+            // return arguments
+            console.log(arguments);
+            }
+
+            sum(1, 2);
+
+    - 
+        Example:
+            function sum() {
+            let total = 0;
+            for (let value of arguments) {
+                // We are able to iterate over this object because
+                // arguments object has Iterator.
+                total += value;
+            }
+            return total;
+            }
+
+            console.log(`SUM: ${sum(1, 2, 3, 4, 5)}`);
+
+* The REST Operator:
+    - Rest parameter must be last the parameter.
+
+    Example:
+        function sum(...args) {
+        return args.reduce((a, n) => a + n);
+        }
+
+        console.log(sum(1, 2, 3, 4, 5, 6));
+
+        function totalCost(discount, ...prices){
+            return (1 - discount) * prices.reduce((a, n) => a + n);
+        }
+
+        console.log(totalCost(0.5, 1, 2, 3, 4,))
+
+* Default Parameter:
+    - There should be no non-default parameters after default parameters.
+
+        Example:
+            function interest(principal, rate = 3.5, years = 5) {
+            // // Before ES6, setting default value
+            // rate = rate || 3.5;
+            // years = years || 5;
+
+            return ((principal * rate) / 100) * years;
+            }
+
+            console.log(interest(10000));
+
+* Getters and Setters:
+* try and catch:
+    // getters: access properties
+    // setters: change (mutate) them
+
+    const person = {
+    firstName: "Mosh",
+    lastName: "Hamedani",
+
+    get fullName() {
+        return `${this.firstName} ${this.lastName}`;
+    },
+
+    set fullName(value) {
+        if (typeof value !== "string") throw new Error("Value is not a string");
+
+        let name = value.split(" ");
+        if (name.length !== 2) throw new Error("Enter a first and last name.");
+
+        this.firstName = name[0];
+        this.lastName = name[1];
+    },
+    };
+
+    console.log(person.fullName);
+    // person.fullName = "pratik singh";
+
+    try {
+    person.fullName = "pratik";
+    } catch (e) {
+    alert(e);
+    }
+
+    console.log(person.fullName);
+
+* Local and global scope:
+    - Scope of a variable or constant determines where that variable or constant is accessible.
+
+    - When we declare a variable using let or const, their scope is limited to the scope or block in which they are defined.
+        {
+            const message = 'hi';
+        }
+        console.log(message); // Error, can't be accessed.
+    
+    - Multiple functions can have variables with the same name. 
+        function x(){
+            const message = 'hi';
+        }
+
+        function y(){
+            const message = 'hello';
+        }
+
+        Each of the message has its own scope.
+
+* let vs var:
+    - let and const create block scoped variable.
+    - var create function scope variables.
+        if (true) {
+        var x = 10;
+        }
+        console.log(x); // 10 (still accessible outside the block)
+    
+    - var declarations are hoisted to the top of their scope and initialized with undefined, which can cause bugs if you try to use them before assignment.
+
+        console.log(a); // undefined
+        var a = 5;
+    
+        But,
+
+        console.log(a); //Error
+        let a = 10;
+
+    - You can redeclare a var variable in the same scope without error, which can lead to accidental overwrites.
+
+        var a = 1;
+        var a = 2; // No error
+
+    - Global variable declared with var keyword is attached to window object. But the global variable declared with let keyword is not attached with window object.
+        var a = 10; // attached to windows object
+        
+        let b = 12; // not attached to window object
+    
+        console.log(window.a); // 10
+        console.log(window.a); // undefined
+
+    - function that we declare in global space is also attached to window objbect
+
+        function x(){}
+
+        window.x() // valid
+
+* The this keyword:
+    - 'this' reference the object that is executing the current function.
+
+    - If the function is part of an object (i.e. it is a method), 'this' reference that object itself.
+        Example:
+
+        const video = {
+        title: "a",
+        play() {
+            console.log(this);
+        },
+        };
+
+        video.stop = function () {
+        console.log(this);
+        };
+
+        video.stop()
+
+    - If the function is a regular function (i.e. it is not part of an object), 'this' references the global object, which is window in browser and global in Node. 
+    - But, if we call a constructor function using 'new' keyword, then 'this' inside the function will reference new empty object.
+
+        Example:
+            function playVideo() {
+            console.log(this); // references window/global object
+            }
+
+            playVideo();
+
+            function Video(title) {
+            this.title = title;
+            console.log(this); //references new object {}
+            }
+
+            new Video('b')
+
+    - In the following case, the this inside callback function which is inside forEach does not have access to the object. It references global object which is window.
+
+        const video = {
+        title: "a",
+        tags: ["a", "b", "c"],
+
+        showTags(){
+            this.tags.forEach(function(tag){
+                console.log(this)
+            })
+        }
+        };
+
+        video.showTags()
+
+        # One solution is we can pass this as an argument to forEach method along with the callback function. But not all method may not have option to pass 'this'.
+
+        const video = {
+        title: "a",
+        tags: ["a", "b", "c"],
+
+        showTags(){
+            this.tags.forEach(function(tag){
+                console.log(this)
+            }, this); // now it has access to video object.
+        }
+        };
+
+        video.showTags()
+
+* Changing this:
+    - (FIRST SOLUTION): Another approach is to store reference of 'this' in a separate variable so that it can be used by the callback function.
+
+            const video = {
+            title: "a",
+            tags: ["a", "b", "c"],
+
+            showTags(){
+                const self = this;
+                this.tags.forEach(function(tag){
+                    console.log(self);
+                })
+            }
+            };
+
+            video.showTags() 
+
+    - Using call():
+        - The call() method in JavaScript is used to invoke a function with a specified this value and arguments provided individually.
+        - call() passes arguments individually.
+            Example: 
+
+            function playVideo() {
+            console.log(this);
+            }
+
+            playVideo.call({ title: "a" });
+            playVideo();
+        
+    - Using apply():
+        - The apply() method in JavaScript is similar to call(), but it takes arguments as an array (or array-like object) instead of listing them individually.
+        - apply() passes arguments as an array.
+
+            Example:
+
+            function introduce(greeting, punctuation) {
+            console.log(greeting + ", my name is " + this.name + punctuation);
+            }
+
+            const person = { name: "Pratik" };
+
+            // Using call()
+            introduce.call(person, "Hello", "!"); // Output: Hello, my name is Pratik!
+
+            // Using apply()
+            introduce.apply(person, ["Hi", "."]); // Output: Hi, my name is Pratik.
+
+    - Using bind():
+        - The bind() method in JavaScript creates a new function with a specific this value and, optionally, preset arguments. Unlike call() and apply(), it does not immediately invoke the function—it returns a new function that you can call later.
+
+            Example:
+
+                function greet(greeting) {
+                console.log(greeting + ", " + this.name);
+                }
+
+                const person = { name: "Pratik" };
+
+                // Create a new function with 'this' bound to 'person'
+                const greetPerson = greet.bind(person);
+
+                greetPerson("Hello"); // Output: Hello, Pratik
+
+    - (SECOND SOLUTION): We use bind to bind the callback function with the this.
+
+        Example:
+
+            const video = {
+            title: "a",
+            tags: ["a", "b", "c"],
+
+            showTags() {
+                const self = this;
+                this.tags.forEach(function (tag) {
+                console.log(self);
+                }.bind(this));
+            },
+            };
+
+            video.showTags()
+
+    - (THIRD SOLUTION): Arrow function inherits the this from the containing function.
+
+            const video = {
+            title: "a",
+            tags: ["a", "b", "c"],
+
+            showTags() {
+                const self = this;
+                this.tags.forEach((tag) => {
+                console.log(self);
+                });
+            },
+            };
+
+            video.showTags()
+
+
+        x = {};
+        const anObj = {
+        title: "a",
+
+        showThis() {
+            (() => {
+            console.log("First", this);
+            (() => {
+                console.log("Second", this);
+                (() => {
+                console.log("Third", this);
+                (() => {
+                    console.log("Fourth", this);
+                })();
+                })();
+            })();
+            })();
+        },
+        };
+
+* Exercise 01 - Sum of arguments:
+        function sum(...args) {
+        if (args.length == 0) return;
+        if (args.length == 1 && Array.isArray(args[0]))
+            // return args[0].reduce((a, n) => a + n);
+            args = [...args[0]];
+
+        return args.reduce((a, n) => a + n);
+        }
+
+        console.log(sum(1, 2, 3, 4, 5));
+        console.log(sum([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+
+* Exercise 02 - Area of Circle:
+        const circle = {
+        radius: 1,
+
+        get area() {
+            return Math.PI * this.radius ** 2;
+        },
+        };
+
+        console.log(circle.radius);
+        console.log(circle.area);
+
+* Exercise 03 - Error Handling:
+        function countOccurrences(array, searchElement) {
+        if (!Array.isArray(array)) throw new Error("Not an array");
+
+        return array.reduce((accumlator, current) => {
+            const occurrence = current == searchElement ? 1 : 0;
+            return accumlator + occurrence;
+        }, 0);
+        }
+
+        const numbers = [1, 2, 3, 4];
+        console.log(countOccurrences(numbers, 1));
