@@ -69,7 +69,6 @@ console.log(interest(10000));
 // Getters and setters
 // try and catch
 
-
 // getters: access properties
 // setters: change (mutate) them
 

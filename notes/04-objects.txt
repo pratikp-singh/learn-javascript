@@ -220,6 +220,43 @@
         increase(obj);
         console.log(obj);
 
+* Adding or Removing Properties:
+    - The objects in JS are dynamic. After creation, we can add or remove properties.
+
+        Example:
+            function Circle(radius){
+                this.radius = radius;
+                this.draw = function(){
+                    console.log('draw');
+                }
+            }
+
+            const circle = new Circle(10);
+            
+            // Add new property
+            circle.location = {x: 1};
+
+            circle['location'] = {x : 1};
+
+            console.log(circle);
+
+    - Bracket notation is useful when we do not know the property name. It comes dynamically. In this case, dot notation is not useful.
+
+        Example:
+        let property = 'location';
+        circle[property] = {x: 1};
+
+        Also, if the property name has special character, with dot notation it is not possible.
+
+        circle['location-circle'] = {x: 1};
+
+    - To delete any property, we can use delete keyword.
+
+        Example: 
+            delete circle['location']
+            or 
+            delete circle.location
+
 * Enumerating Properties of an Object:
 
         // Enumearting objects:
@@ -308,3 +345,198 @@
 
 * Date: 
 
+##### Object Orietned Programming #####
+
+* What is OOP
+    - A programming paradigm centered around objects rather than functions.
+
+    - 4 pillars:
+        # Encapsulation:
+            - Encapsulation is the concept of bundling data (properties) and methods (functions) that operate on that data into a single unit, usually a class. 
+            - It also restricts direct access to some of the object's components, which helps protect the integrity of the data.
+
+        # Abstraction:
+            - Abstraction in Object-Oriented Programming (OOP) is the concept of hiding complex implementation details and showing only the essential features of an object.
+
+            - Focuses on what an object does, not how it does it.
+
+            - Helps reduce complexity by exposing only relevant methods and properties.
+
+            - Achieved using abstract classes, interfaces, or by exposing only necessary methods.
+
+        # Inheritance:
+            - Inheritance is a mechanism that allows one class (child or subclass) to acquire the properties and methods of another class (parent or superclass).
+
+            - Promotes code reuse.
+            
+            - Enables hierarchical relationships.
+            
+            - The child class can add or override methods and properties
+
+        # Polymorphism:
+            - Polymorphism in Object-Oriented Programming (OOP) is the ability of different objects to respond to the same method or property in different ways.
+
+            - Means "many forms."
+            
+            - Allows methods to have different implementations based on the object calling them.
+            
+            - Achieved through method overriding or interfaces.
+
+* Abstraction:
+    - Hide the details and expose only the essentials
+    - What if we want methods and properties that has to be used by methods of same objects, not outside.
+
+* Private Properties and Methods:
+
+    - In case of Constructor function, if we want some property or methods to be used by itself, instead of using this, we can declare them using let or const keyword. This is applicable to variable and functions also.
+
+        Example:
+
+            function Circle(radius) {
+                this.radius = radius;
+                let defaultLocation = { x: 0, y: 0 };
+
+                let computeOptimumLocation = function () {};
+
+                this.draw = function () {
+                    defaultLocation.x = 10;
+                    computeOptimumLocation();
+
+                    console.log("draw");
+                };
+            }
+
+    - This works because of closure. 
+        # Closure: A closure in JavaScript is a feature where an inner function has access to the outer (enclosing) function's variables—even after the outer function has finished executing.
+
+        Example:
+            function createCounter() {
+                let count = 0;  // This variable is in the outer function's scope
+
+                function increment() {
+                    count++;   // The inner function accesses and modifies 'count'
+                    console.log(count);
+                }
+
+                return increment; // Returning the inner function, along with its closure over 'count'
+            }
+
+            const counter = createCounter();
+            counter(); // Output: 1
+            counter(); // Output: 2   
+        - In this example, even though createCounter() has finished execution, the returned increment function still has access to the count variable. This retained access is a closure.
+
+        - When you call createCounter(), JavaScript creates a new execution context for that function. Inside it, the count variable is created. Normally, after the function finishes, its local variables would be removed from memory.
+
+        - However, because the inner increment function (which is returned) references count, JavaScript keeps count alive in memory as part of the closure. This means:
+
+        - The function definition of createCounter is always in memory (like any function).
+        The execution context (local variables) of createCounter is usually destroyed after it runs.
+        - But: If an inner function (like increment) is returned and still references those variables, JavaScript keeps those variables (like count) in memory as long as the returned function exists.
+
+        - In summary:
+            - The count variable stays in memory because the returned increment function forms a closure over it. The closure preserves the environment (variables) it needs, even after createCounter() has finished executing.
+
+        - In short, while scope is about where variables live and can be accessed, a closure is a pattern that lets a function continue to access its original scope even after that scope has finished execution.
+
+    - But, technically this is not private properties as they are not part of circle object. They are just local variable.
+
+* Getters and Setters:
+
+    * Method 1: (Define a function that returns the value)
+
+            function Circle(radius) {
+            this.radius = radius;
+            let defaultLocation = { x: 0, y: 0 };
+
+            let computeOptimumLocation = function () {};
+
+            this.getDefaultLocation = function () {
+                return defaultLocation;
+            };
+
+            this.draw = function () {
+                defaultLocation.x = 10;
+                computeOptimumLocation();
+
+                console.log("draw");
+            };
+            }
+
+            const circle = new Circle(10);
+            circle.getDefaultLocation();
+
+        - But, we are calling getDefaultLocation as a function.
+    
+    * Method 2: (Use Object.defineProperty() or Object.defineProperties() method)
+        - 
+            Example:
+                function Circle(radius) {
+                this.radius = radius;
+                let defaultLocation = { x: 0, y: 0 };
+
+                let computeOptimumLocation = function () {};
+
+                this.draw = function () {
+                    defaultLocation.x = 10;
+                    computeOptimumLocation();
+
+                    console.log("draw");
+                };
+
+                Object.defineProperty(this, "defaultLocation", {
+                    get: function () {
+                    return defaultLocation;
+                    },
+                    set: function (value) {
+                    if (!value.x || !value.y) throw new Error("Invalid location.");
+
+                    defaultLocation = value;
+                    },
+                });
+                }
+
+                const circle = new Circle(10);
+                console.log(circle.defaultLocation);
+
+* EXERCISE - Stopwatch
+
+        function StopWatch() {
+        let startTime,
+            endTime,
+            running,
+            duration = 0;
+
+        this.start = function () {
+            if (running) throw new Error("Stopwatch has already started.");
+
+            running = true;
+
+            startTime = new Date();
+        };
+
+        this.stop = function () {
+            if (!running) throw new Error("Stopwatch is not started.");
+
+            running = false;
+
+            endTime = new Date();
+
+            const seconds = (endTime.getTime() - startTime.getTime()) / 1000;
+
+            duration += seconds;
+        };
+
+        this.reset = function () {
+            startTime = null;
+            endTime = null;
+            running = false;
+            duration = 0;
+        };
+
+        Object.defineProperty(this, "duration", {
+            get: function () {
+            return duration;
+            },
+        });
+        }
